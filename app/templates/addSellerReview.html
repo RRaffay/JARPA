@@ -1,0 +1,39 @@
+{% extends "base.html" %} {% block content %}
+
+<h1>Add Seller Review</h1>
+
+{% if current_user.is_authenticated %}
+<form action="" method="post">
+  {{ form.hidden_tag() }}
+  <p>
+    {{ form.rating.label }}<br />
+    {{ form.rating(size=1) }}<br />
+    {% for error in form.rating.errors %}
+    <span style="color: red">[{{ error }}]</span>
+    {% endfor %}
+  </p>
+  <p>
+    {{ form.reviewdescription.label }}<br />
+    {{ form.reviewdescription(size=64) }}<br />
+    {% for error in form.reviewdescription.errors %}
+    <span style="color: red">[{{ error }}]</span>
+    {% endfor %}
+  </p>
+  <p>{{ form.submit() }}</p>
+  {% with messages = get_flashed_messages() %} {% if messages %}
+  <ul>
+    {% for message in messages %}
+    <li style="color: red">{{ message }}</li>
+    {% endfor %}
+  </ul>
+  {% endif %} {% endwith %}
+</form>
+
+{% else %}
+
+<div class="subsection error">
+  <h3>
+    <a href="{{ url_for('users.login') }}">Log in</a> before leaving a review.
+  </h3>
+</div>
+{% endif %} {% endblock %}

@@ -1,0 +1,37 @@
+{% extends "base.html" %} {% block content %}
+
+<br /><br />
+
+<form method="GET">
+  <input type="search" class="form-control" placeholder="Search" name="cq" />
+  <br />
+  <button type="submit" class="btn btn-primary">Search</button>
+</form>
+
+<br /><br />
+
+<h2>Product Categories:</h2>
+{{ pagination.info }} {{ pagination.links }}
+
+<br /><br />
+<div class="container">
+  {% for row in categoriesIn|batch(3) %}
+  <div class="row">
+    {% for column in row %}
+    <a
+      class="col-sm catcard"
+      href="{{url_for('index.CatProducts', catName = column.name)}}"
+    >
+      {{column.name}}
+    </a>
+    {% endfor %}
+  </div>
+  {% endfor %}
+</div>
+<br /><br />
+
+<br />
+<br />
+
+<a href="{{url_for('index.index')}}"> All products </a>
+{% endblock %}

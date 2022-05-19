@@ -1,0 +1,42 @@
+{% extends "base.html" %} {% block content %}
+<!-- Used to edit seller inventory (quantities of available products) -->
+
+<h1>Select A Product To Edit</h1>
+<div class = 'subsection'>
+    <a href="{{url_for('users.inventory')}}" type="button" class="btn btn-primary">Return to Inventory</a>
+</br>
+</br>
+    <table class="table table-hover table-bordered container">
+        <thead class ='thead-dark'>
+            <tr>
+                <th scope="col">Product Name</th>
+                <th scope="col">Price</th>
+                <th scope="col">Description</th>
+                <th scope="col">Image</th>
+                <th scope="col">Quantity in Inventory</th>
+                <th scope="col">Delete from Inventory</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in sells %}
+            <tr>
+                <td>{{item[0].name}}</td>
+                <td>{{item[0].price}}</td>
+                <td>{{item[0].description}}</td>
+                <td><img src="{{item[0].image}}" alt="Product Image" style="width: 50px; height: 50px;";/></td>
+                <td>
+                    <form action = "{{url_for('users.updateInventory', pid = item[0].pid)}}" method = "POST">
+                        <input type="number" class="form-control " placeholder={{item[1]}} name="amt" min="1"/>
+                        <button type="submit" class="btn btn-outline-success">Update</button> 
+                    </form>
+                </td>
+                <td>
+                    <a href = "{{url_for('users.deleteItem', pid = item[0].pid)}}" type="button"class="btn btn-outline-danger">Delete</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}

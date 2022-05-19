@@ -1,0 +1,106 @@
+{% extends "base.html" %} {% block content %}
+
+<h1>Public Profile</h1>
+<div class="subsection">
+  <h2>{{user.firstname}} {{user.lastname}}</h2>
+  <h5>ID: {{user.id}}</h5>
+
+{%if seller %}
+
+    <h5>Email:<a href="mailto:{{user.email}}"> {{user.email}}</a></h5>
+    <h5>Address: {{user.adrs}}</h5>
+</div>
+
+<br>
+<a
+  href="{{ url_for('index.addSellerReview', sid = user.id) }}"
+  type="button"
+  class="btn btn-light"
+  >Add Seller Review</a
+>
+<br />
+
+<br>
+
+<table class="table table-hover table-bordered container">
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col">Products {{user.firstname}} Sells</th>
+      <th scope="col">Quantity</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for product in sells %}
+    <tr>
+      <td>
+        <a href="{{url_for('index.ProductPages', productID = product[0].pid)}}"> 
+        {{product[0].name}} </a>
+      </td>
+      <td>
+        {{product[1]}}
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<br>
+
+<br>
+
+<h3>
+  {{num_ratings}} ratings averaging {{"{:.2f}".format(average_rating)}} stars
+</h3>
+
+<table class="table table-hover table-bordered container">
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col">Reviews of {{user.firstname}}</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for review in reviews %}
+    <tr>
+      <td>
+        {% for n in range(review[0]) %}
+          &#9733;
+        {% endfor %}
+        {% for n in range(5-review[0]) %}
+          &#9734;
+        {% endfor %}
+
+        &nbsp;&nbsp;&nbsp;{{review[1][:-1]}}, from <a href="{{url_for('users.publicProfile', id = review[2])}}">{{review[3]}}</a>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+{%else%}
+</div>
+
+{% endif %}
+
+
+<!-- RECENT PURCHASES
+<h2>Your recent purchases:</h2>
+<table class="table table-hover table-bordered container">
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col">Product Name</th>
+      <th scope="col">Order Date</th>
+      <th scope="col">Quantity</th>
+      <th scope="col">Fulfillment Status</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for purchase in purchase_history%}
+    <tr>
+      <td><a href="{{url_for('index.ProductPages', productID = purchase.pid)}}">{{Product.get(purchase.pid).name}}</a></td>
+      <td>{{purchase.time_purchased}}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+-->
+{% endblock %}

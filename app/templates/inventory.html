@@ -1,0 +1,131 @@
+{% extends "base.html" %} {% block content %} {% if seller %}
+<h1>My Inventory and <a href="#ORDERS">Orders</a></h1>
+<br /><br />
+<h2>Inventory</h2>
+<div class="subsection">
+  <h3>Search Inventory</h3>
+  <form method="GET">
+    <input type="search" class="form-control" placeholder="Search" name="sqp" />
+    <br />
+    <button type="submit" class="btn btn-primary">Search</button>
+  </form>
+
+  <br />
+  <a href="{{ url_for('index.index') }}">
+    <button type="submit" class="btn btn-primary">Add Product</button>
+  </a>
+  <a href="{{ url_for('users.editInventory') }}">
+    <button type="submit" class="btn btn-primary">Edit Inventory</button>
+  </a>
+  <br />
+  <br />
+  <table class="table table-hover table-bordered container">
+    <thead class="thead-dark">
+      <tr>
+        <th scope="col">Product Name</th>
+        <th scope="col">Price</th>
+        <th scope="col">Description</th>
+        <th scope="col">Image</th>
+        <th scope="col">Quantity</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for item in sells %}
+      <tr>
+        <td>
+          <a href="{{url_for('index.ProductPages', productID = item[0].pid)}}">
+            {{item[0].name}}
+          </a>
+        </td>
+        <td>{{item[0].price}}</td>
+        <td>{{item[0].description}}</td>
+        <td>
+          <img
+            src="{{item[0].image}}"
+            alt="Product Image"
+            style="width: 50px; height: 50px"
+            ;
+          />
+        </td>
+        <td>{{item[1]}}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<br /><br />
+
+<a id="ORDERS">
+  {% if has_orders %}
+  <h2>Orders</h2>
+  <div class="subsection">
+    <h3>Search Orders</h3>
+    <form method="GET">
+      <input
+        type="search"
+        class="form-control"
+        placeholder="Search"
+        name="sqo"
+      />
+      <br />
+      <button type="submit" class="btn btn-primary">Search</button>
+    </form>
+
+    <br />
+
+    <table class="table table-hover table-bordered container">
+      <thead class="thead-dark">
+        <tr>
+          <th scope="col">Product</th>
+          <th scope="col">Buyer</th>
+          <th scope="col">Address</th>
+          <th scope="col">Quantity</th>
+          <th scope="col">Time Purchased</th>
+          <th scope="col">Fulfillment Status</th>
+          <th scope="col">Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for order in orders %}
+        <tr>
+          <td>
+            <a
+              href="{{url_for('index.ProductPages', productID = order[0].product_id)}}"
+            >
+              {{order[2][0]}}
+            </a>
+          </td>
+          <td>
+            <a href="{{url_for('users.publicProfile', id = order[1][3])}}">
+              {{order[1][0]}} {{order[1][1]}}</a
+            >
+          </td>
+          <td>{{order[1][2]}}</td>
+          <td>{{order[0].num_items}}</td>
+          <td>{{order[0].date}}</td>
+          <td>{{order[0].fulfilled}}</td>
+          <td>
+            <a
+              href="{{ url_for('users.changeFulfillment', oid = order[0].oid, pid = order[0].product_id) }}"
+            >
+              {% if order[0].fulfilled %}
+              <button type="submit" class="btn btn-outline-danger">
+                Mark as Unfulfilled
+              </button>
+              {% else %}
+              <button type="submit" class="btn btn-outline-success">
+                Mark as Fulfilled
+              </button>
+              {% endif %}
+            </a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {%else%}
+  <h1>No Orders Yet</h1>
+</a>
+{% endif %} {% endif %} {% endblock %}

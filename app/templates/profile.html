@@ -1,0 +1,246 @@
+{% extends "base.html" %} {% block content %}
+
+<h1>Your Profile</h1>
+{% if current_user.is_authenticated %}
+<div class="subsection">
+  <h3>{{current_user.firstname}} {{current_user.lastname}}</h3>
+  <div style="padding-left: 10px; margin-top: 15px; border-left: 2px solid black; margin-left: 2px;">
+    <p>{{current_user.email}}</p>
+    <p>{{current_user.adrs}}</p>
+    <p>User ID: {{current_user.id}}</p>
+  </div>
+  <a href="{{ url_for('users.update') }}" type="button" class="btn btn-outline-primary"
+    >Update Profile</a
+  >
+  
+  {% if seller %}
+  <a href="{{ url_for('users.inventory')}}" type="button" class="btn btn-outline-primary"
+  >View Inventory</a>
+  {% endif %}
+  {% if creator %}
+  <a href="{{ url_for('users.creations')}}" type="button" class="btn btn-outline-primary"
+  >View Creations</a>
+  {% endif %}
+</div>
+
+<br />
+
+<!-- UPDATE BALANCE -->
+<div class="subsection">
+  <div class="container">
+    <div class="row">
+      <div class = "col">
+        <h3>Balance: ${{current_user.balance}}</h3>
+      </div>
+      <div class="col-">
+        <a
+          href="{{ url_for('users.clearBalance') }}"
+          type="button"
+          class="btn btn-danger"
+          >Withdraw Balance</a
+        >
+      </div>
+
+      <div class="col">
+        <form action="/updateBalance" method="POST">
+          <div class="container">
+            <div class="row">
+              <div class="col">
+                <input
+                  type="number"
+                  class="form-control"
+                  placeholder="Add to Balance"
+                  name="amt"
+                />
+              </div>
+              <div class="col">
+                <button type="submit" class="btn btn-primary">Add</button>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% if seller %}
+
+<!-- <br/><br/>
+<h2>Products Sold</h2>
+<table class="table table-hover table-bordered container">
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col">Product</th>
+      <th scope="col">Quantity</th>
+      <th scope="col">Price</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for product in sells %}
+    <tr>
+      <td>
+        <a href="{{url_for('index.ProductPages', productID = product[0].pid)}}">
+          {{product[0].name}}
+        </a>
+      </td>
+      <td>{{product[1]}}</td>
+      <td>${{Product.get(product[0].pid).price}}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table> -->
+
+<br />
+
+<h2>Reviews of You</h2>
+<table class="table table-hover table-bordered container">
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col">Rating</th>
+      <th scope="col">Review</th>
+      <th scope="col">User</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for review in reviews %}
+    <tr>
+      <td>{% for n in range(review[0]) %} &#9733; {% endfor %} {% for n in
+        range(5-review[0]) %} &#9734; {% endfor %}</td>
+        <td>{{review[1][:-1]}}</td>
+        
+        <td>
+        <a href="{{url_for('users.publicProfile', id = review[2])}}"
+          >{{review[3]}}</a
+        >
+        </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+{% endif %}
+
+<br />
+
+<!-- RECENT PURCHASES
+<h2>Your Recent Purchases</h2>
+<table class="table table-hover table-bordered container">
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col">Purchase ID</th>
+      <th scope="col">Product Name</th>
+      <th scope="col">Total Amount</th>
+      <th scope="col">Quantity</th>
+      <th scope="col">Fulfillment Status</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for purchase in purchase_history%}
+    <tr>
+      <th scope="row">{{purchase.id}}</th>
+      <td>{{purchase.pid}}</td>
+      <td>{{purchase.time_purchased}}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table> -->
+
+<br/>
+<!-- PRODUCT REVIEWS -->
+<h2>Your Product Reviews</h2>
+<table class="table table-hover table-bordered container">
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col">Product</th>
+      <th scope="col">Rating</th>
+      <th scope="col">Review</th>
+      <th scope="col">Date</th>
+      <th scope="col">Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for review in reviews_product %}
+    <tr>
+      <td>
+<a href = {{url_for('index.ProductPages', productID = review.pid)}}>{{Product.get(review.pid).name}}</a>
+      </td>
+      <td>
+        {% for n in range(review.rating) %} &#9733; {% endfor %} {% for n in
+        range(5-review.rating) %} &#9734; {% endfor %} 
+      </td>
+      <td>
+        {{review.review[:-1]}}
+      </td>
+      <td>
+        {{review.date}}
+      </td>
+      <td>
+        <a
+          href="{{ url_for('index.removeProductReview', pid = review.pid) }}"
+          type="button"
+          class="btn btn-outline-danger"
+          >Delete Review</a
+        >
+        <a
+          href="{{ url_for('index.updateProductReview', pid = review.pid) }}"
+          type="button"
+          class="btn btn-outline-primary"
+          >Update Review</a
+        >
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<br/>
+<!-- SELLER REVIEWS -->
+<h2>Your Seller Reviews</h2>
+<table class="table table-hover table-bordered container">
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col">Seller</th>
+      <th scope="col">Rating</th>
+      <th scope="col">Review</th>
+      <th scope="col">Date</th>
+      <th scope="col">Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for review in reviews_seller %}
+    <tr>
+      <td><a href="{{url_for('users.publicProfile', id = review.pid)}}">{{User.get(review.pid).firstname}} {{User.get(review.pid).lastname}}</a></td>
+      <td>
+        {% for n in range(review.rating) %} &#9733; {% endfor %} {% for n in
+        range(5-review.rating) %} &#9734; {% endfor %}
+      </td>
+      <td>{{review.review}}</td>
+      <td>
+        {{review.date}}
+      </td>
+      <td>
+        <a
+          href="{{ url_for('index.removeSellerReview', sid = review.pid) }}"
+          type="button"
+          class="btn btn-light"
+          >Delete Review</a
+        >
+        <a
+          href="{{ url_for('index.updateSellerReview', sid = review.pid) }}"
+          type="button"
+          class="btn btn-light"
+          >Update Review</a
+        >
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+{% else %}
+
+<div class="subsection error">
+  <h3><a href="{{ url_for('users.login') }}">Log in</a> first!</h3>
+</div>
+{% endif %} {% endblock %}

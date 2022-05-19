@@ -1,0 +1,48 @@
+{% extends "base.html" %} {% block content %}
+
+<h1>Purchases</h1>
+<br />
+{% for i in range(allOrders|length) %}
+<h2>Order {{allOrders[i][0][0]}}</h2>
+<p style="float: right">${{'%0.2f' % Order.totalPrice(allOrders[i][0][0])}}</p>
+{% if Order.fulfilled(allOrders[i]) %}
+<p style="color: green; float: right; padding-right: 20px">Fulfilled</p>
+{%else%}
+<p style="color: red; float: right; padding-right: 20px">Unfulfilled</p>
+{% endif %}
+<table class="table table-hover table-bordered container">
+  <thead class="thead-light">
+    <tr>
+      <th scope="col">Product</th>
+      <th scope="col">Seller</th>
+      <th scope="col">Date</th>
+      <th scope="col">Fulfilled</th>
+      <th scope="col">Quantity</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    {% for order in allOrders[i] %}
+
+    <tr>
+      <td>
+        <a
+          href="{{url_for('index.ProductPages', productID = order.product_id)}}"
+          >{{Product.get(order.product_id).name}}</a
+        >
+      </td>
+      <td>
+        <a
+          href="{{url_for('users.publicProfile', id = User.get(order.seller_id).id)}}"
+          >{{User.get(order.seller_id).firstname}}
+          {{User.get(order.seller_id).lastname}}</a
+        >
+      </td>
+      <td>{{order.date}}</td>
+      <td>{{order.fulfilled}}</td>
+      <td>{{order.num_items}}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endfor %} {% endblock %}

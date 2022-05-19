@@ -1,0 +1,86 @@
+{% extends "base.html" %} {% block content %}
+
+<h1>Cart</h1>
+<h2>
+  <a
+    href="{{ url_for('index.index')}}"
+    type="button"
+    class="btn btn-outline-primary"
+  >
+    See Product List
+  </a>
+</h2>
+
+<h4 style="float: right; padding-left: 20px; padding-bottom: 20px">
+  Price: ${{'%0.2f' % total}}
+</h4>
+<a
+  style="float: right"
+  href="{{ url_for('index.SubmitOrder', uid = current_user.id)}}"
+  type="button"
+  class="btn btn-primary"
+>
+  Place Order
+</a>
+
+<form action="/applyCoupon" method="POST">
+  <input type="text" placeholder="Optional Coupon Code" name="coupon" />
+  <button type="submit" class="btn btn-outline-primary">Apply</button>
+</form>
+
+<br />
+<table class="table table-hover table-bordered container">
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col">Product Name</th>
+      <th scope="col">Description</th>
+      <th scope="col">Price</th>
+      <th scope="col">Quantity</th>
+      <th scope="col">Total Price</th>
+      <th scope="col">Delete Item</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for product in allProds%}
+    <tr>
+      <td>{{product[0].name}}</td>
+      <td>{{product[0].description}}</td>
+      <td>${{'%0.2f' % product[0].price}}</td>
+      <td>
+        {{product[0].quantity}}
+        <form action="/updateQuantity" method="POST">
+          <!-- <div class = "row">
+                      <div class = "col"> -->
+          <input
+            type="number"
+            name="product_id"
+            value="{{product[0].pid}}"
+            hidden
+          />
+          <input
+            type="number"
+            class="form-control"
+            placeholder="Change Quantity"
+            name="quant"
+            min="1"
+          />
+          <button type="submit" class="btn btn-primary">Update</button>
+        </form>
+      </td>
+      <td>${{'%0.2f' % product[1]}}</td>
+      <td>
+        <form action="/deleteCart" method="POST">
+          <input
+            type="number"
+            name="delproduct_id"
+            value="{{product[0].pid}}"
+            hidden
+          />
+          <button type="submit" class="btn btn-primary">Delete</button>
+        </form>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

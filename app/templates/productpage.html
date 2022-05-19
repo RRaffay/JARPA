@@ -1,0 +1,158 @@
+{% extends "base.html" %} {% block content %} {% if user_creator %}
+<a href="{{url_for('index.updateProduct',pid=product.pid)}}">
+<button class="btn btn-light update_product_button">
+  Update Product </a>
+</button>
+</a>
+<br />
+<br />
+{% endif %}
+
+<table class="product">
+  <tbody>
+    <thead>
+      <tr>
+        <th scope="col">Name</th>
+        <th scope="col">Description</th>
+      </tr>
+    </thead>
+
+    <tr>
+      <td><h1>{{product.name}}</h1></td>
+      <td>{{product.description}}</td>
+    </tr>
+
+    <thead>
+      <tr>
+        <th scope="col">Price</th>
+        <th scope="col">Category</th>
+      </tr>
+    </thead>
+    <tr>
+      <td>${{product.price}}</td>
+      <td>
+        <a
+          href="{{url_for('index.CatProducts', catName = product.category)}}"
+        />{{product.category}}
+      </td>
+    </tr>
+
+    <thead>
+      <tr>
+        <th scope="col">Image</th>
+        <th scope="col">Creator</th>
+      </tr>
+    </thead>
+    <tr>
+      <td>
+        <img
+          style="width: 20vw; height: 20vw"
+          src="{{product.image}}"
+          alt="Product Image"
+        />
+      </td>
+      <td>
+        <a href="{{url_for('users.publicProfile', id = user.id)}}"
+          >{{user.firstname}} {{user.lastname}}</a
+        >
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+
+{% if current_user.is_authenticated %}
+<br />
+<a href="{{ url_for('index.AddToCart', uid = current_user.id, quantity = 1, pid=product.pid) }}"   type="button"
+  class="btn btn-outline-primary"> Add to Cart </a> 
+  <br />
+  <br />
+  <br />
+{% endif %}
+
+{% if user_seller %}
+<h4>Add to Inventory</h4>
+
+<form action="{{url_for('users.addItem', pid = product.pid)}}" method="POST">
+  <input
+    type="number"
+    class="form-control"
+    placeholder="Enter Quantity"
+    name="amt"
+    min="1"
+  />
+  <br />
+  <button type="submit" class="btn btn-outline-success">
+    Add to My Inventory
+  </button>
+</form>
+
+{%endif%}
+<br />
+<br />
+
+<a
+  href="{{ url_for('index.addProductReview', pid = product.pid) }}"
+  type="button"
+  class="btn btn-outline-primary"
+  style="float: right"
+  >Add Product Review</a
+>
+
+<h1>Reviews</h1>
+<table class="table table-hover table-bordered">
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col">Rating of {{product.name}}</th>
+      <th scope="col">Review</th>
+      <th scope="col">Reviewer</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for review in reviews %}
+    <tr>
+      <td>
+        {% for n in range(review[0]) %} &#9733; {% endfor %} {% for n in
+        range(5-review[0]) %} &#9734; {% endfor %}
+      </td>
+      <td>{{review[1][:-1]}}</td>
+      <td>
+        <a href="{{url_for('users.publicProfile', id = review[2])}}"
+          >{{review[3]}}</a
+        >
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<br />
+<h1>Sellers</h1>
+<table class="table table-hover table-bordered">
+  <tbody>
+    <thead class="thead-dark">
+      <tr>
+        <th scope="col">{{product.name}} is Sold By</th>
+        <th scope="col">Quantity</th>
+      </tr>
+    </thead>
+    {% for seller in sellerNames %}
+    <tr>
+      <td>
+        <a href="{{url_for('users.publicProfile', id = seller[0].id)}}"
+          >{{seller[0].firstname}} {{seller[0].lastname}}</a
+        >
+      </td>
+      <td>{{seller[1]}}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<br />
+<br />
+<br />
+
+<a href="{{url_for('index.index')}}"> All products </a>
+
+{% endblock %}
